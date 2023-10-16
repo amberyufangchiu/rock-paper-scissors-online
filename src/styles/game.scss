@@ -10,8 +10,10 @@
             margin-top: 20px;
 
             button {
-                  font-size: 2rem;
+                  border: none;
+                  font-size: 3rem;
                   cursor: pointer;
+                  background-color: transparent;
 
                   &:hover {
                         transform: scale(1.1);
