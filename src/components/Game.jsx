@@ -19,7 +19,6 @@ const Game = ({ playerName, setJoinGame, playerData }) => {
     await updateDoc(playerRef, {
       [playerName]: choice,
     });
-    console.log(`Player ${playerName} chose ${choice}.`);
     setPlayerChoice(choice);
   };
 
@@ -78,10 +77,7 @@ const Game = ({ playerName, setJoinGame, playerData }) => {
                   {opponent}&apos;s choice:
                   {choiceMap[playerData[opponent]]}
                 </p>
-                <p>
-                  Result:
-                  {getResult(playerData[opponent])}
-                </p>
+                <p>{getResult(playerData[opponent])}</p>
               </div>
               <button
                 className="play-again"

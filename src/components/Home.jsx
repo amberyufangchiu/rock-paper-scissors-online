@@ -5,6 +5,7 @@ import "./../styles/home.scss";
 
 const Home = ({ playerName, setPlayerName, setJoinGame }) => {
   const [isRoomFull, setIsRoomFull] = useState(false);
+  const [isPlayerExist, setPlayerExist] = useState(false);
 
   const updatePlayersField = async () => {
     const playerRef = doc(db, "RPS", "room");
@@ -15,13 +16,12 @@ const Home = ({ playerName, setPlayerName, setJoinGame }) => {
     if (playerData.players.length >= 2) return setIsRoomFull(true);
 
     if (playerData.players && playerData.players.includes(playerName)) {
-      console.log(`Player ${playerName} already exists.`);
+      setPlayerExist(true);
     } else {
       await updateDoc(playerRef, {
         players: arrayUnion(playerName),
         [playerName]: null,
       });
-      console.log(`Player ${playerName} added to the room.`);
       setJoinGame(true);
     }
   };
@@ -39,6 +39,7 @@ const Home = ({ playerName, setPlayerName, setJoinGame }) => {
             name="name"
             onChange={(e) => setPlayerName(e.target.value)}
           />
+          {isPlayerExist ? <p>player name exists</p> : null}
           <button
             className="button-82-pushable"
             role="button"
