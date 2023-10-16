@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
-import db from "./../firebase"; // Import your Firebase configuration
+import db from "./../firebase";
 import "./../styles/home.scss";
 
 const Home = ({ playerName, setPlayerName, setJoinGame }) => {

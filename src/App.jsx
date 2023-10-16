@@ -1,12 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import "./styles/home.scss";
-import Home from "./components/home";
-import Game from "./components/game";
+import Home from "./components/Home";
+import Game from "./components/Game";
+import { doc, onSnapshot } from "firebase/firestore";
+import db from "./firebase";
 
 function App() {
   const [playerName, setPlayerName] = useState("");
   const [joinGame, setJoinGame] = useState(false);
+  const [playerData, setPlayerData] = useState({});
+
+  useEffect(() => {
+    const playerRef = doc(db, "RPS", "room");
+
+    const unsubscribe = onSnapshot(playerRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        setPlayerData(JSON.parse(JSON.stringify(data)));
+        if (data?.players < 2) setJoinGame(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="app">
@@ -16,6 +33,8 @@ function App() {
           playerName={playerName}
           setPlayerName={setPlayerName}
           setJoinGame={setJoinGame}
+          playerData={playerData}
+          setPlayerData={setPlayerData}
         />
       ) : (
         <Home

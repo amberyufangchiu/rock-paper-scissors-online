@@ -1,11 +1,16 @@
-import { useEffect, useState } from "react";
-import { setDoc, doc, updateDoc, onSnapshot } from "firebase/firestore";
+import { useState } from "react";
+import { setDoc, doc, updateDoc } from "firebase/firestore";
 import db from "../firebase";
 import "./../styles/game.scss";
 
-const Game = ({ playerName, setJoinGame }) => {
+const choiceMap = {
+  Rock: "✊🏼",
+  Paper: "🖐🏼",
+  Scissors: "✌🏼",
+};
+
+const Game = ({ playerName, setJoinGame, playerData }) => {
   const [playerChoice, setPlayerChoice] = useState("");
-  const [playerData, setPlayerData] = useState({});
   const opponent = playerData?.players?.find((name) => name !== playerName);
 
   const handleChoice = async (choice) => {
@@ -17,19 +22,6 @@ const Game = ({ playerName, setJoinGame }) => {
     console.log(`Player ${playerName} chose ${choice}.`);
     setPlayerChoice(choice);
   };
-
-  useEffect(() => {
-    const playerRef = doc(db, "RPS", "room");
-
-    const unsubscribe = onSnapshot(playerRef, (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const data = docSnapshot.data();
-        setPlayerData(JSON.parse(JSON.stringify(data)));
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const getResult = (otherChoice) => {
     let result = "";
@@ -72,19 +64,19 @@ const Game = ({ playerName, setJoinGame }) => {
           ) : null}
           {playerChoice.length && !playerData[opponent]?.length ? (
             <>
-              <p>Your choice: {playerChoice}</p>
-              <p>waiting for opponent make their choice</p>
+              <p>Your choice: {choiceMap[playerChoice]}</p>
+              <p>waiting for the opponent make their choice</p>
             </>
           ) : null}
           {playerChoice.length && playerData[opponent]?.length ? (
             <>
               <div>
                 <p>
-                  {`${playerName}`}&apos;s choice: {playerChoice}
+                  {`${playerName}`}&apos;s choice: {choiceMap[playerChoice]}
                 </p>
                 <p>
                   {opponent}&apos;s choice:
-                  {playerData[opponent]}
+                  {choiceMap[playerData[opponent]]}
                 </p>
                 <p>
                   Result:
@@ -102,7 +94,7 @@ const Game = ({ playerName, setJoinGame }) => {
           ) : null}
         </div>
       ) : (
-        <p>waiting for opponent</p>
+        <p>waiting for the opponent</p>
       )}
     </div>
   );
